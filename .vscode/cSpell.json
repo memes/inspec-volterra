@@ -2,9 +2,10 @@
     "version": "0.1",
     "language": "en",
     "words": [
-        "yamllint",
+        "goreleaser",
         "markdownlint",
-        "goreleaser"
+        "Volterra",
+        "yamllint"
     ],
     "flagWords": [
         "hte"

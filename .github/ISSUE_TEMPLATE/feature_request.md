@@ -18,7 +18,6 @@ provide as much detail as possible.
 <!-- markdownlint-disable MD026 -->
 ## Are you willing to contribute?
 
-<!-- spell-checker: ignore thumbsup -->
 Feature requests are nice, but collaboration is better :thumbsup:
 We're very happy to take pull requests for solutions that have been built and
 tested by others. Please open a pull request, linked to this issue, and ask for

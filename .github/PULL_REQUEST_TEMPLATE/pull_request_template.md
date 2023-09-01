@@ -34,5 +34,5 @@ Please describe the testing that you've done.
 
 All opened PRs will have a pre-commit check that enforces code conventions and
 document formatting and we will ask you to make changes to the PR if that check
-fails. You can run these checks your self by install [pre-commit](https://pre-commit.com/)
+fails. You can run these checks your self by installing [pre-commit](https://pre-commit.com/)
 as described in the project [CONTRIBUTING](/CONTRIBUTING.md) guidelines.

@@ -27,12 +27,11 @@ Any other details we need to know?
 
 ## Reproducing the issue
 
-How can we reproduce this behaviour? Which version of F5's product was used?
+How can we reproduce this behavior?
 
 ## Additional context
 
-<!-- spell-checker: ignore pastebin -->
-Add any other context about the problem here. Sanitised snippets of logs are
+Add any other context about the problem here. Sanitized snippets of logs are
 welcome, but we prefer that you upload larger files to a third-party host
 (Pastebin, GCS bucket, etc.) and provide a link instead.
 
