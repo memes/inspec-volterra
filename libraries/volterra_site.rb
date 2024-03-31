@@ -29,13 +29,16 @@ class VolterraSite < Inspec.resource(1)
   SIMPLE_PROPERTIES = %i[address ce_site_mode desired_pool_count global_access_k8s_enabled ipsec_ssl_nodes_fqdn
                          local_access_k8s_enabled multus_enabled operating_system_version region site_state site_subtype
                          site_to_site_network_type site_type tunnel_dead_timeout tunnel_type vip_vrrp_mode vm_enabled
-                         volterra_software_overide volterra_software_version].freeze
+                         volterra_software_overide volterra_software_version vip_selection
+                         local_k8s_access_enabled].freeze
   IPADDRESS_PROPERTIES = %i[bgp_peer_address bgp_router_id inside_nameserver inside_vip outside_nameserver
-                            outside_vip site_to_site_tunnel_ip].freeze
+                            outside_vip site_to_site_tunnel_ip inside_vip_v6 outside_vip_v6 bgp_peer_address_v6
+                            inside_nameserver_v6 outside_nameserver_v6].freeze
   REFERENCES_PROPERTIES = %i[connected_re connected_re_for_config].freeze
   EMPTY_PROPERTIES = %i[default_underlay_network].freeze
-  attr_reader(:metadata, :system_metadata, :ares_list, :coordinates, :vip_params_per_az, *SIMPLE_PROPERTIES,
-              *IPADDRESS_PROPERTIES, *REFERENCES_PROPERTIES, *EMPTY_PROPERTIES)
+  attr_reader(:resource_version, :metadata, :system_metadata, :ares_list, :coordinates, :vip_params_per_az,
+              :site_to_site_ipsec_connectivity, :private_connectivity, *SIMPLE_PROPERTIES, *IPADDRESS_PROPERTIES,
+              *REFERENCES_PROPERTIES, *EMPTY_PROPERTIES)
 
   # rubocop: disable Lint/MissingSuper
   def initialize(params = {})
@@ -61,7 +64,7 @@ class VolterraSite < Inspec.resource(1)
   private
 
   def path
-    "config/namespaces/#{@namespace}/sites/#{@name}"
+    "config/namespaces/#{@namespace}/sites/#{@name}?response_format=GET_RSP_FORMAT_READ"
   end
 
   # TODO: @memes - revisit
@@ -74,7 +77,7 @@ class VolterraSite < Inspec.resource(1)
       when :system_metadata
         @system_metadata = VolterraInspec::SystemMetadata.new(value)
       when :spec
-        value.fetch(:gc_spec, {}).each do |property, value|
+        value.each do |property, value|
           if SIMPLE_PROPERTIES.include?(property)
             instance_variable_set("@#{property}", if value.is_a?(Array)
                                                     VolterraInspec.parse_array(value, value[0].class)
@@ -95,10 +98,24 @@ class VolterraSite < Inspec.resource(1)
             @coordinates = VolterraSite::Coordinates.new(value).freeze
           elsif property == :vip_params_per_az
             @vip_params_per_az = VolterraInspec.parse_array(value, VolterraSite::VipParams)
+          elsif property == :site_to_site_ipsec_connectivity
+            @site_to_site_ipsec_connectivity =
+              VolterraInspec.parse_array(value, VolterraSite::SiteToSiteIpsecConnectivity).freeze
+          elsif property == :private_connectivity
+            @private_connectivity = if value.nil?
+                                      nil
+                                    else
+                                      VolterraSite::PrivateConnectivity.new(value).freeze
+                                    end
           else
             puts "Unknown spec property when parsing Site: #{property} => #{value}"
           end
         end
+      when :resource_version
+        @resource_version = value
+      when :replace_form, :status, :referring_objects, :deleted_referred_objects, :disabled_referred_objects
+        # Ignore these properties
+        next
       else
         puts "Unknown property when parsing Site: #{property} => #{value}"
       end
@@ -155,6 +172,34 @@ class VolterraSite < Inspec.resource(1)
 
     def to_s
       "VipParams #{@az_name}"
+    end
+  end
+
+  # Volterra site to site IPSec defaults.
+  class SiteToSiteIpsecConnectivity
+    attr_reader :destination, :port
+
+    def initialize(data)
+      @destination = data.fetch(:destination, []).map { |v| VolterraInspec.parse_ipaddress(v).freeze }
+      @port = data.fetch(:port, nil)
+    end
+
+    def to_s
+      'SiteToSiteIpsecConnectivity'
+    end
+  end
+
+  # Volterra site private connectivity details.
+  class PrivateConnectivity
+    attr_reader :cloud_link, :private_network_name
+
+    def initialize(data)
+      @cloud_link = data.fetch(:cloud_link, {})
+      @private_network_name = data.fetch(:private_network_name, nil)
+    end
+
+    def to_s
+      'PrivateConnectivity'
     end
   end
 end

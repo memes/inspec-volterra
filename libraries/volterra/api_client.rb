@@ -20,7 +20,7 @@ module VolterraInspec
   class ApiClient
     def initialize(params = {})
       @params = params
-      @conn = Faraday.new(url: base, headers: { 'User-Agent': user_agent }, ssl: ssl, request: request) do |config|
+      @conn = Faraday.new(url: base, headers: { 'User-Agent': user_agent }, ssl:, request:) do |config|
         config.response :raise_error
       end
     end
@@ -28,7 +28,7 @@ module VolterraInspec
     # Retrieves the Volterra resource from the specified path, returning a hash of values or nil for not found.
     # All other client exceptions will be allowed to propagate to caller.
     def fetch(resource, params = {})
-      JSON.parse(@conn.get(resource, params).body, { symbolize_names: true }).fetch(:object)
+      JSON.parse(@conn.get(resource, params).body, { symbolize_names: true })
     rescue Faraday::ResourceNotFound
       # Return nil for 404 instead of allowing exception to propagate
       nil
@@ -87,7 +87,7 @@ module VolterraInspec
     def request
       {
         open_timeout: 5,
-        read_timeout: read_timeout
+        read_timeout:
       }.freeze
     end
 
