@@ -1,0 +1,12 @@
+---
+name: inspec-volterra
+title: Provides a Volterra resource
+maintainer: Matthew Emes
+copyright: Matthew Emes
+copyright_email: memes@matthewemes.com
+license: Apache-2.0
+summary: >-
+  Perform validations against Volterra resources.
+version: 0.1.0
+supports:
+  platform: os

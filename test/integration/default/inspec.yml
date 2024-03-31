@@ -1,0 +1,5 @@
+---
+name: inspec-volterra-verifier
+depends:
+  - name: inspec-volterra
+    path: ../../../

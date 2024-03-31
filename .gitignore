@@ -1,17 +1,11 @@
 # Ignore my direnv setup
 .envrc
 .direnv
+.tool-versions
 
-# Ignore Terraform plugin/module cache and local state files
-.terraform
-*.tfstate
-*.tfstate.*
+# Ignore local ruby state and locks
+.bundle
+Gemfile.lock
 
-# Don't include any local automatic variable assignment files
-terraform.tfvars
-terraform.tfvars.json
-*.auto.tfvars
-*.auto.tfvars.json
-
-# Ignore generated binaries in dist
-dist/
+# Ignore local inspec.lock
+inspec.lock
