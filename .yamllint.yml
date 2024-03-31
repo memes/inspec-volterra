@@ -1,0 +1,8 @@
+---
+extends: default
+
+rules:
+  # release-please action strips the leading '---' when updating the version
+  document-start:
+    ignore:
+      - inspec.yml
