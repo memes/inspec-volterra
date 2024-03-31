@@ -1,0 +1,13 @@
+{
+    "release-type": "simple",
+    "extra-files": [
+        {
+            "type": "yaml",
+            "path": "inspec.yml",
+            "jsonpath": "$.version"
+        }
+    ],
+    "packages": {
+        ".": {}
+    }
+}
